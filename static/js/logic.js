@@ -13,8 +13,7 @@ function markerSize(magnitude) {
 
 
 function colorGradient(depth) {
-    // let color = "";
-
+   
     if (depth > 90) {
         return "#da0f13";
     }
@@ -66,8 +65,8 @@ d3.json(url).then(function (response) {
         earthquakes.forEach(function (j) {
             // console.log(j.location);
             // console.log(j.magnitude);
-            console.log(j.depth);
-            console.log(j.place);
+            // console.log(j.depth);
+            // console.log(j.place);
 
             L.circle(j.location, {
                 fillOpacity: 0.75,
@@ -75,7 +74,7 @@ d3.json(url).then(function (response) {
                 color: "black",
                 fillColor: colorGradient(j.depth),
                 radius: markerSize(j.magnitude)
-            }).bindPopup(`<h3>${j.place}</h1> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3>`).addTo(myMap);
+            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <hr> <h3>Depth: ${j.depth.toLocaleString()}</h3>`).addTo(myMap);
 
         });
 
