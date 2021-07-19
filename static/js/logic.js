@@ -3,15 +3,17 @@ let myMap = L.map("map", {
     zoom: 3
 });
 
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(myMap);
 
+// function to create marker size
 function markerSize(magnitude) {
     return magnitude * 50000;
 }
 
-
+// function to create color gradient for marker and legend
 function colorGradient(depth) {
    
     if (depth > 90) {
@@ -34,6 +36,7 @@ function colorGradient(depth) {
     }
 }
 
+// creating the legend 
 let legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
@@ -42,16 +45,14 @@ legend.onAdd = function (map) {
         depthChart = [-10, 10, 30, 50, 70, 90],
         labels = [];
 
-    // loop through our density intervals and generate a label with a colored square for each interval
+    // looping through depthChart and generating a label with a colored square for each depth range
     for (let i = 0; i < depthChart.length; i++) {
         div.innerHTML +=
             '<i style="background:' + colorGradient(depthChart[i] + 1) + '"></i> ' +
             depthChart[i] + (depthChart[i + 1] ? '&ndash;' + depthChart[i + 1] + '<br>' : '+');
     }
-
     return div;
 };
-
 legend.addTo(myMap);
 
 
@@ -59,18 +60,15 @@ let url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geo
 
 d3.json(url).then(function (response) {
 
-    // console.log(response);
-
     response.features.forEach(function (i) {
         let coords = i.geometry.coordinates;
-        // console.log(coords);
         let lat = coords[1];
         let lon = coords[0];
         let depth = coords[2];
-        // console.log(lat);
         let mag = i.properties.mag;
         let place = i.properties.place;
-        // console.log(magnitude);
+        
+        // creating earthquake object
         let earthquakes = [
             {
                 place: place,
@@ -79,13 +77,8 @@ d3.json(url).then(function (response) {
                 depth: depth
             }
         ]
-        // console.log(earthquakes);
 
         earthquakes.forEach(function (j) {
-            // console.log(j.location);
-            // console.log(j.magnitude);
-            // console.log(j.depth);
-            // console.log(j.place);
 
             L.circle(j.location, {
                 fillOpacity: 0.75,
@@ -98,8 +91,5 @@ d3.json(url).then(function (response) {
         });
 
     });
-
-
-
 
 });
