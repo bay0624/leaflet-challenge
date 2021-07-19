@@ -15,25 +15,44 @@ function markerSize(magnitude) {
 function colorGradient(depth) {
    
     if (depth > 90) {
-        return "#da0f13";
+        return "#800026";
     }
-    else if (depth > 70 && depth < 90) {
-        return "#f58025";
+    else if (depth > 70) {
+        return "#bd0026";
     }
-    else if (depth > 50 && depth < 70) {
-        return "#f5b03b";
+    else if (depth > 50) {
+        return "#e31a1c";
     }
-    else if (depth > 30 && depth < 50) {
-        return "#f5e050";
+    else if (depth > 30) {
+        return "#fc4e2a";
     }
-    else if (depth > 10 && depth < 30) {
-        return "#a7f1a8";
+    else if (depth > 10) {
+        return "#fd8d3c";
     }
     else {
-        return "#83d475";
+        return "#feb24c";
+    }
+}
+
+let legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+    let div = L.DomUtil.create('div', 'info legend'),
+        depthChart = [-10, 10, 30, 50, 70, 90],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (let i = 0; i < depthChart.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + colorGradient(depthChart[i] + 1) + '"></i> ' +
+            depthChart[i] + (depthChart[i + 1] ? '&ndash;' + depthChart[i + 1] + '<br>' : '+');
     }
 
-}
+    return div;
+};
+
+legend.addTo(myMap);
 
 
 let url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
@@ -74,7 +93,7 @@ d3.json(url).then(function (response) {
                 color: "black",
                 fillColor: colorGradient(j.depth),
                 radius: markerSize(j.magnitude)
-            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <hr> <h3>Depth: ${j.depth.toLocaleString()}</h3>`).addTo(myMap);
+            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <h3>Depth: ${j.depth.toLocaleString()} km</h3> `).addTo(myMap);
 
         });
 
