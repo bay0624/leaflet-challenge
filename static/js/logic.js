@@ -15,22 +15,22 @@ function markerSize(magnitude) {
 function colorGradient(depth) {
    
     if (depth > 90) {
-        return "#800026";
+        return "#ff0d0d";
     }
     else if (depth > 70) {
-        return "#bd0026";
+        return "#ff4e11";
     }
     else if (depth > 50) {
-        return "#e31a1c";
+        return "#ff8e15";
     }
     else if (depth > 30) {
-        return "#fc4e2a";
+        return "#fab733";
     }
     else if (depth > 10) {
-        return "#fd8d3c";
+        return "#acb334";
     }
     else {
-        return "#feb24c";
+        return "#69b34c";
     }
 }
 
