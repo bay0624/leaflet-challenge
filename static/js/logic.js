@@ -1,10 +1,38 @@
-let myMap = L.map("map", {
-    center: [37.7749, -122.4194],
-    zoom: 4
+// let myMap = L.map("map", {
+//     center: [37.7749, -122.4194],
+//     zoom: 4
+// });
+
+let earthquakes = L.layerGroup();
+let tectonics = L.layerGroup();
+
+
+let cityMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+})
+
+let topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+let baseMaps = {
+    "City Map": cityMap,
+    "Topographic Map": topoMap
+};
+
+let overlayMaps = {
+    "Earthquakes": earthquakes,
+    "Tectonic": tectonics
+};
+
+let myMap = L.map("map", {
+    center: [37.7749, -122.4194],
+    zoom: 4,
+    layers: [topoMap, earthquakes]
+});
+
+L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
 }).addTo(myMap);
 
 // function to create marker size
@@ -14,7 +42,7 @@ function markerSize(magnitude) {
 
 // function to create color gradient for marker and legend
 function colorGradient(depth) {
-   
+
     if (depth > 90) {
         return "#ff0d0d";
     }
@@ -36,7 +64,7 @@ function colorGradient(depth) {
 }
 
 // creating the legend 
-let legend = L.control({position: 'bottomright'});
+let legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function (map) {
 
@@ -66,7 +94,7 @@ d3.json(url).then(function (response) {
         let depth = coords[2];
         let mag = i.properties.mag;
         let place = i.properties.place;
-        
+
         // creating earthquake object
         let earthquakes = [
             {
@@ -92,3 +120,13 @@ d3.json(url).then(function (response) {
     });
 
 });
+
+// let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+// d3.json(url2).then(function (data) {
+
+//     L.geoJSON(date, {
+//         color: "orange",
+//         weight: 2
+//     })
+
+// });
