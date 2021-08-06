@@ -46,7 +46,7 @@ L.control.layers(baseMaps, overlayMaps, {
 
 // function to create marker size
 function markerSize(magnitude) {
-    return magnitude * 50000;
+    return magnitude * 35000;
 }
 
 // function to create color gradient for marker and legend
