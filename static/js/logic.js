@@ -1,5 +1,5 @@
 // create layer groups
-let earthquakes = L.layerGroup();
+let earthquakePoints = L.layerGroup();
 let tectonics = L.layerGroup();
 
 // create map tiles
@@ -23,25 +23,26 @@ let terrainMap = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}'
 
 let baseMaps = {
     "Satellite": satelliteMap,
-    "Topographic Map": topoMap,
-    "Terrain Map": terrainMap,
-    "Default Map": defaultMap,
+    "Topographic": topoMap,
+    "Terrain": terrainMap,
+    "Default": defaultMap,
 };
 
 let overlayMaps = {
-    "Earthquakes": earthquakes,
+    "Earthquakes": earthquakePoints,
     "Tectonic": tectonics
 };
 
 let myMap = L.map("map", {
     center: [37.7749, -122.4194],
     zoom: 4,
-    layers: [satelliteMap, earthquakes]
+    layers: [satelliteMap, earthquakePoints]
 });
 
 L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
 }).addTo(myMap);
+
 
 // function to create marker size
 function markerSize(magnitude) {
@@ -91,9 +92,9 @@ legend.onAdd = function (map) {
 legend.addTo(myMap);
 
 // Earthquake Data
-let url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+let url1 = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
 
-d3.json(url).then(function (response) {
+d3.json(url1).then(function (response) {
 
     response.features.forEach(function (i) {
         let coords = i.geometry.coordinates;
@@ -121,15 +122,14 @@ d3.json(url).then(function (response) {
                 color: "black",
                 fillColor: colorGradient(j.depth),
                 radius: markerSize(j.magnitude)
-            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <h3>Depth: ${j.depth.toLocaleString()} km</h3> `).addTo(myMap);
-
+            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <h3>Depth: ${j.depth.toLocaleString()}</h3> `).addTo(earthquakePoints);
+            earthquakePoints.addTo(myMap);
         });
-
     });
 
 });
 
-// Add tectonic plates data
+// Tectonic plates data with geoJSON
 let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 d3.json(url2).then(function (data) {
 
@@ -139,4 +139,7 @@ d3.json(url2).then(function (data) {
     }).addTo(tectonics);
     tectonics.addTo(myMap);
 
+    // x = data.features.forEach(function (k) {
+    //     let coords = k.geometry.coordinates;
+    //     console.log(coords);
 });
