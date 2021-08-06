@@ -3,7 +3,7 @@ let earthquakes = L.layerGroup();
 let tectonics = L.layerGroup();
 
 // create map tiles
-let cityMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+let defaultMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
@@ -11,9 +11,21 @@ let topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
+let satelliteMap = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let terrainMap = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
 let baseMaps = {
+    "Satellite": satelliteMap,
     "Topographic Map": topoMap,
-    "City Map": cityMap
+    "Terrain Map": terrainMap,
+    "Default Map": defaultMap,
 };
 
 let overlayMaps = {
@@ -24,7 +36,7 @@ let overlayMaps = {
 let myMap = L.map("map", {
     center: [37.7749, -122.4194],
     zoom: 4,
-    layers: [topoMap, earthquakes]
+    layers: [satelliteMap, earthquakes]
 });
 
 L.control.layers(baseMaps, overlayMaps, {
