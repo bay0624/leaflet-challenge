@@ -1,23 +1,19 @@
-// let myMap = L.map("map", {
-//     center: [37.7749, -122.4194],
-//     zoom: 4
-// });
-
+// create layer groups
 let earthquakes = L.layerGroup();
 let tectonics = L.layerGroup();
 
-
+// create map tiles
 let cityMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-})
+});
 
 let topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 });
 
 let baseMaps = {
-    "City Map": cityMap,
-    "Topographic Map": topoMap
+    "Topographic Map": topoMap,
+    "City Map": cityMap
 };
 
 let overlayMaps = {
@@ -82,7 +78,7 @@ legend.onAdd = function (map) {
 };
 legend.addTo(myMap);
 
-
+// Earthquake Data
 let url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
 
 d3.json(url).then(function (response) {
@@ -121,12 +117,14 @@ d3.json(url).then(function (response) {
 
 });
 
-// let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
-// d3.json(url2).then(function (data) {
+// Add tectonic plates data
+let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+d3.json(url2).then(function (data) {
 
-//     L.geoJSON(date, {
-//         color: "orange",
-//         weight: 2
-//     })
+    L.geoJSON(data, {
+        color: "yellow",
+        weight: 2
+    }).addTo(tectonics);
+    tectonics.addTo(myMap);
 
-// });
+});
