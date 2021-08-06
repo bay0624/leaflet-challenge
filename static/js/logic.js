@@ -92,7 +92,7 @@ legend.onAdd = function (map) {
 legend.addTo(myMap);
 
 // Earthquake Data
-let url1 = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+let url1 = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
 d3.json(url1).then(function (response) {
 
