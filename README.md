@@ -27,7 +27,7 @@ let earthquakePoints = L.layerGroup();
 let tectonics = L.layerGroup();
 ```
 
-#### Creatinh map tiles
+#### Creating map tiles
 ```JavaScript
 let defaultMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -77,7 +77,7 @@ function markerSize(magnitude) {
 }
 ```
 
-#### function to create color gradient for marker and legend
+#### Function for creating color gradient for marker and legend
 ```JavaScript
 function colorGradient(depth) {
 
@@ -102,7 +102,7 @@ function colorGradient(depth) {
 }
 ```
 
-#### Creating the legend 
+#### Creating the map legend 
 ```JavaScript
 let legend = L.control({ position: 'bottomright' });
 
@@ -162,7 +162,7 @@ earthquakes.forEach(function (j) {
             earthquakePoints.addTo(myMap);
 ```
 
-#### Tectonic plates data with geoJSON
+#### Creating tectonic plates data with geoJSON
 ```JavaScript
 let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 d3.json(url2).then(function (data) {
