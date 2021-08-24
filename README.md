@@ -18,3 +18,41 @@ Terrain Map             |  Topographic Map
 - JavaScript (Leaflet, D3)
 - HTML
 - CSS
+
+# Steps
+#### Getting Earthquake Data from USGS
+```JavaScript
+let url1 = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+
+d3.json(url1).then(function (response) {
+
+    response.features.forEach(function (i) {
+        let coords = i.geometry.coordinates;
+        let lat = coords[1];
+        let lon = coords[0];
+        let depth = coords[2];
+        let mag = i.properties.mag;
+        let place = i.properties.place;
+
+        // creating earthquake object
+        let earthquakes = [
+            {
+                place: place,
+                location: [lat, lon],
+                magnitude: mag,
+                depth: depth
+            }
+        ]
+```
+
+#### Tectonic plates data with geoJSON
+```JavaScript
+let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+d3.json(url2).then(function (data) {
+
+    L.geoJSON(data, {
+        color: "yellow",
+        weight: 2
+    }).addTo(tectonics);
+    tectonics.addTo(myMap);
+```
