@@ -20,6 +20,109 @@ Terrain Map             |  Topographic Map
 - CSS
 
 # Steps
+
+#### Creating layer groups
+```JavaScript
+let earthquakePoints = L.layerGroup();
+let tectonics = L.layerGroup();
+```
+
+#### Creatinh map tiles
+```JavaScript
+let defaultMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+let topoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+
+let satelliteMap = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let terrainMap = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let baseMaps = {
+    "Satellite": satelliteMap,
+    "Topographic": topoMap,
+    "Terrain": terrainMap,
+    "Default": defaultMap,
+};
+
+let overlayMaps = {
+    "Earthquakes": earthquakePoints,
+    "Tectonic": tectonics
+};
+
+let myMap = L.map("map", {
+    center: [37.7749, -122.4194],
+    zoom: 4,
+    layers: [satelliteMap, earthquakePoints]
+});
+
+L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+}).addTo(myMap);
+```
+
+#### Function for creating marker size
+```JavaScript
+function markerSize(magnitude) {
+    return magnitude * 35000;
+}
+```
+
+#### function to create color gradient for marker and legend
+```JavaScript
+function colorGradient(depth) {
+
+    if (depth > 90) {
+        return "#ff0d0d";
+    }
+    else if (depth > 70) {
+        return "#ff4e11";
+    }
+    else if (depth > 50) {
+        return "#ff8e15";
+    }
+    else if (depth > 30) {
+        return "#fab733";
+    }
+    else if (depth > 10) {
+        return "#acb334";
+    }
+    else {
+        return "#69b34c";
+    }
+}
+```
+
+#### Creating the legend 
+```JavaScript
+let legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function (map) {
+
+    let div = L.DomUtil.create('div', 'info legend'),
+        depthChart = [-10, 10, 30, 50, 70, 90],
+        labels = [];
+
+    // looping through depthChart and generating a label with a colored square for each depth range
+    for (let i = 0; i < depthChart.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + colorGradient(depthChart[i] + 1) + '"></i> ' +
+            depthChart[i] + (depthChart[i + 1] ? '&ndash;' + depthChart[i + 1] + '<br>' : '+');
+    }
+    return div;
+};
+legend.addTo(myMap);
+```
+
 #### Getting Earthquake Data from USGS
 ```JavaScript
 let url1 = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
@@ -45,6 +148,20 @@ d3.json(url1).then(function (response) {
         ]
 ```
 
+#### Getting Pop-Up information
+```JavaScript
+earthquakes.forEach(function (j) {
+
+            L.circle(j.location, {
+                fillOpacity: 0.75,
+                weight: 0.75,
+                color: "black",
+                fillColor: colorGradient(j.depth),
+                radius: markerSize(j.magnitude)
+            }).bindPopup(`<h3>${j.place}</h3> <hr> <h3>Magnitude: ${j.magnitude.toLocaleString()}</h3> <h3>Depth: ${j.depth.toLocaleString()}</h3> `).addTo(earthquakePoints);
+            earthquakePoints.addTo(myMap);
+```
+
 #### Tectonic plates data with geoJSON
 ```JavaScript
 let url2 = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
@@ -56,3 +173,4 @@ d3.json(url2).then(function (data) {
     }).addTo(tectonics);
     tectonics.addTo(myMap);
 ```
+
